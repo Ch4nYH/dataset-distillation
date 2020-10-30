@@ -176,7 +176,7 @@ class BottleNeck(nn.Module):
 class ResNet18(utils.ReparamModule):
     supported_dims = {28, 32}
 
-    def __init__(self, block = BasicBlock, num_block=[2, 2, 2, 2], num_classes=100):
+    def __init__(self, state, block = BasicBlock, num_block=[2, 2, 2, 2], num_classes=100):
         super().__init__()
 
         self.in_channels = 64
