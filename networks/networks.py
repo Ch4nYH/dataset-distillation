@@ -119,7 +119,7 @@ class BasicBlock(utils.ReparamModule):
     #to distinct
     expansion = 1
 
-    def __init__(self, in_channels, out_channels, stride=1):
+    def __init__(self, state, in_channels, out_channels, stride=1):
         super().__init__()
 
         #residual function
@@ -180,7 +180,7 @@ class ResNet18(utils.ReparamModule):
         super().__init__()
 
         self.in_channels = 64
-
+        self.state = state
         self.conv1 = nn.Sequential(
             nn.Conv2d(3, 64, kernel_size=3, padding=1, bias=False),
             nn.BatchNorm2d(64),
@@ -212,7 +212,7 @@ class ResNet18(utils.ReparamModule):
         strides = [stride] + [1] * (num_blocks - 1)
         layers = []
         for stride in strides:
-            layers.append(block(self.in_channels, out_channels, stride))
+            layers.append(block(self.state, self.in_channels, out_channels, stride))
             self.in_channels = out_channels * block.expansion
 
         return nn.Sequential(*layers)
