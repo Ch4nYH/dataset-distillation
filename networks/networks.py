@@ -109,42 +109,6 @@ class AlexNet(utils.ReparamModule):
 
 
 
-class BasicBlock(utils.ReparamModule):
-    """Basic Block for resnet 18 and resnet 34
-    """
-
-    #BasicBlock and BottleNeck block
-    #have different output size
-    #we use class attribute expansion
-    #to distinct
-    expansion = 1
-
-    def __init__(self, state, in_channels, out_channels, stride=1):
-        super().__init__()
-
-        #residual function
-        self.residual_function = nn.Sequential(
-            nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=stride, padding=1, bias=False),
-            nn.BatchNorm2d(out_channels),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(out_channels, out_channels * BasicBlock.expansion, kernel_size=3, padding=1, bias=False),
-            nn.BatchNorm2d(out_channels * BasicBlock.expansion)
-        )
-
-        #shortcut
-        self.shortcut = nn.Sequential()
-
-        #the shortcut output dimension is not the same with residual function
-        #use 1*1 convolution to match the dimension
-        if stride != 1 or in_channels != BasicBlock.expansion * out_channels:
-            self.shortcut = nn.Sequential(
-                nn.Conv2d(in_channels, out_channels * BasicBlock.expansion, kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm2d(out_channels * BasicBlock.expansion)
-            )
-
-    def forward(self, x):
-        return nn.ReLU(inplace=True)(self.residual_function(x) + self.shortcut(x))
-
 class BottleNeck(nn.Module):
     """Residual block for resnet over 50 layers
     """
@@ -176,7 +140,43 @@ class BottleNeck(nn.Module):
 class ResNet18(utils.ReparamModule):
     supported_dims = {28, 32}
 
-    def __init__(self, state, block = BasicBlock, num_block=[2, 2, 2, 2], num_classes=100):
+    class BasicBlock(nn.Module):
+        """Basic Block for resnet 18 and resnet 34
+        """
+
+        #BasicBlock and BottleNeck block
+        #have different output size
+        #we use class attribute expansion
+        #to distinct
+        expansion = 1
+
+        def __init__(self, state, in_channels, out_channels, stride=1):
+            super().__init__()
+
+            #residual function
+            self.residual_function = nn.Sequential(
+                nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=stride, padding=1, bias=False),
+                nn.BatchNorm2d(out_channels),
+                nn.ReLU(inplace=True),
+                nn.Conv2d(out_channels, out_channels * BasicBlock.expansion, kernel_size=3, padding=1, bias=False),
+                nn.BatchNorm2d(out_channels * BasicBlock.expansion)
+            )
+
+            #shortcut
+            self.shortcut = nn.Sequential()
+
+            #the shortcut output dimension is not the same with residual function
+            #use 1*1 convolution to match the dimension
+            if stride != 1 or in_channels != BasicBlock.expansion * out_channels:
+                self.shortcut = nn.Sequential(
+                    nn.Conv2d(in_channels, out_channels * BasicBlock.expansion, kernel_size=1, stride=stride, bias=False),
+                    nn.BatchNorm2d(out_channels * BasicBlock.expansion)
+                )
+
+        def forward(self, x):
+            return nn.ReLU(inplace=True)(self.residual_function(x) + self.shortcut(x))
+
+    def __init__(self, state, block = BasicBlock, num_block=[2, 2, 2, 2]):
         super().__init__()
 
         self.in_channels = 64
@@ -192,7 +192,7 @@ class ResNet18(utils.ReparamModule):
         self.conv4_x = self._make_layer(block, 256, num_block[2], 2)
         self.conv5_x = self._make_layer(block, 512, num_block[3], 2)
         self.avg_pool = nn.AdaptiveAvgPool2d((1, 1))
-        self.fc = nn.Linear(512 * block.expansion, num_classes)
+        self.fc = nn.Linear(512 * block.expansion, state.num_classes)
 
     def _make_layer(self, block, out_channels, num_blocks, stride):
         """make resnet layers(by layer i didnt mean this 'layer' was the
