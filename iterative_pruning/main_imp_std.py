@@ -185,7 +185,7 @@ def train(results, model, criterion, optimizer, epoch):
     for i, (input, label, lr) in enumerate(results):
 
         image = input.cuda()
-        target = target.cuda()
+        target = label.cuda()
 
         # compute output
         output_clean = model(image)
