@@ -180,7 +180,8 @@ def train(results, model, criterion, optimizer, epoch):
 
     # switch to train mode
     model.train()
-
+    model.normalize = NormalizeByChannelMeanStd(
+            mean=[0.4914, 0.4822, 0.4465], std=[0.2470, 0.2435, 0.2616])
     start = time.time()
     for i, (input, label, lr) in enumerate(results):
 
