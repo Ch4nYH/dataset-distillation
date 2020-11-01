@@ -67,6 +67,3 @@ def prune_model_custom(model, mask_dict):
         if isinstance(m, nn.Conv2d):
             print('pruning layer with custom mask:', name)
             prune.CustomFromMask.apply(m, 'weight', mask=mask_dict[name+'.weight_mask'])
-
-def extract_weight_with_single_bn(model_dict, idx):
-    
