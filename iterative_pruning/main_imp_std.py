@@ -186,9 +186,6 @@ def train(results, model, criterion, optimizer, epoch):
 
         image = input.cuda()
         target = label.cuda()
-        print(input)
-        print(label)
-        print(lr)
         # compute output
         output_clean = model(image)
         loss = criterion(output_clean, target)
@@ -196,7 +193,7 @@ def train(results, model, criterion, optimizer, epoch):
         optimizer.zero_grad()
 
         for param_group in optimizer.param_groups:
-            param_group['lr'] = lr
+            param_group['lr'] = lr.item()
 
         loss.backward()
         optimizer.step()
