@@ -186,7 +186,9 @@ def train(results, model, criterion, optimizer, epoch):
 
         image = input.cuda()
         target = label.cuda()
-
+        print(input)
+        print(label)
+        print(lr)
         # compute output
         output_clean = model(image)
         loss = criterion(output_clean, target)
