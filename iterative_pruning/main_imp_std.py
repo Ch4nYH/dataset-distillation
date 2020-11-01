@@ -73,6 +73,7 @@ def main():
 
     _, val_loader, _ = cifar10_dataloaders()
     class_number = 10
+    model = resnet18(num_classes=class_number)
 
     # prepare dataset 
     img_results = torch.load("results.pth", map_location="cpu")
