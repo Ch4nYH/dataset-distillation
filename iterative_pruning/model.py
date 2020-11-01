@@ -200,10 +200,11 @@ class ResNet(nn.Module):
 
         return nn.Sequential(*layers)
 
-    def _forward_impl(self, x):
+    def _forward_impl(self, x, is_testing = True):
 
         # See note [TorchScript super()]
-        x = self.normalize(x)
+        if is_testing:
+            x = self.normalize(x)
 
         x = self.conv1(x)
         x = self.bn1(x)
@@ -221,8 +222,8 @@ class ResNet(nn.Module):
 
         return x
 
-    def forward(self, x):
-        return self._forward_impl(x)
+    def forward(self, x, is_testing = True):
+        return self._forward_impl(x, is_testing = is_testing)
 
 
 def _resnet(arch, block, layers, pretrained, progress, **kwargs):
