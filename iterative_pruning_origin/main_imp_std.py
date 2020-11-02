@@ -29,7 +29,7 @@ from advertorch.utils import NormalizeByChannelMeanStd
 
 from pruning_utils import *
 from model import resnet18
-from dataset import cifar10_dataloaders, cifar100_dataloaders, fashionmnist_dataloaders
+from dataset import cifar10_dataloaders, cifar10_subset_dataloaders, cifar100_dataloaders, fashionmnist_dataloaders
 
 parser = argparse.ArgumentParser(description='PyTorch Adversarial Training')
 
@@ -94,6 +94,15 @@ def main():
         model.normalize = NormalizeByChannelMeanStd(
             mean=[0.4914, 0.4822, 0.4465], std=[0.2470, 0.2435, 0.2616])
         train_loader, val_loader, test_loader = cifar10_dataloaders(batch_size= args.batch_size, data_dir =args.data)
+    
+    elif args.dataset == 'cifar_10_10':
+        print('training on cifar10 subset')
+
+        model = resnet18(num_classes=class_number)
+        model.normalize = NormalizeByChannelMeanStd(
+            mean=[0.4914, 0.4822, 0.4465], std=[0.2470, 0.2435, 0.2616])
+        train_loader, val_loader, test_loader = cifar10_subset_dataloaders(batch_size= args.batch_size, data_dir =args.data)
+
 
     elif args.dataset == 'cifar100':
 
