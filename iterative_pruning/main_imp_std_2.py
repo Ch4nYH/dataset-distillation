@@ -29,7 +29,7 @@ from advertorch.utils import NormalizeByChannelMeanStd
 
 from pruning_utils import *
 from model import resnet18
-from dataset import cifar10_dataloaders, cifar10_subset_dataloaders, cifar100_dataloaders, fashionmnist_dataloaders
+from dataset import cifar10_dataloaders, cifar100_dataloaders, fashionmnist_dataloaders
 
 parser = argparse.ArgumentParser(description='PyTorch Adversarial Training')
 
