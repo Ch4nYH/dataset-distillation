@@ -172,7 +172,7 @@ def main():
     print('######################################## Start Standard Training Iterative Pruning ########################################')
     print(model.normalize)  
 
-
+    start_state = 1
     for state in range(start_state, args.pruning_times):
 
         print('******************************************')
@@ -235,7 +235,7 @@ def main():
             initalization = torch.load(os.path.join(args.save_dir, '0model_SA_best.pth.tar'), map_location = torch.device('cuda:'+str(args.gpu)))['state_dict']
 
 
-        pruning_model(model, args.rate)
+        #pruning_model(model, args.rate)
         check_sparsity(model)
         #current_mask = extract_mask(model.state_dict())
         current_mask = torch.load(os.path.join(args.mask_path, '{}checkpoint.pth.tar'.format(state+1)))
