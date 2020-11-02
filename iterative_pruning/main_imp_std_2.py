@@ -178,10 +178,6 @@ def main():
         print('******************************************')
         print('pruning state', state)
         print('******************************************')
-
-        model.load_state_dict(initalization)
-
-        #pruning using custom mask
         
         for epoch in range(start_epoch, args.epochs):
 
