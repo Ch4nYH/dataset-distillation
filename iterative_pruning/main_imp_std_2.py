@@ -179,6 +179,18 @@ def main():
         print('pruning state', state)
         print('******************************************')
 
+        model.load_state_dict(initalization)
+
+        #pruning using custom mask
+        current_mask = torch.load(os.path.join(args.mask_path, '{}checkpoint.pth.tar'.format(state+1)))
+        prune_model_custom(model, current_mask)
+        check_sparsity(model)
+
+        optimizer = torch.optim.SGD(model.parameters(), args.lr,
+                                    momentum=args.momentum,
+                                    weight_decay=args.weight_decay)
+        scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=decreasing_lr, gamma=0.1)
+
         for epoch in range(start_epoch, args.epochs):
 
             print(optimizer.state_dict()['param_groups'][0]['lr'])
@@ -236,22 +248,13 @@ def main():
 
 
         #pruning_model(model, args.rate)
-        check_sparsity(model)
+        
         #current_mask = extract_mask(model.state_dict())
-        current_mask = torch.load(os.path.join(args.mask_path, '{}checkpoint.pth.tar'.format(state+1)))
-        remove_prune(model)
+        
+        #remove_prune(model)
 
         #rewind weight to init
-        model.load_state_dict(initalization)
 
-        #pruning using custom mask
-        prune_model_custom(model, current_mask)
-        check_sparsity(model)
-
-        optimizer = torch.optim.SGD(model.parameters(), args.lr,
-                                    momentum=args.momentum,
-                                    weight_decay=args.weight_decay)
-        scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=decreasing_lr, gamma=0.1)
 
 
 
